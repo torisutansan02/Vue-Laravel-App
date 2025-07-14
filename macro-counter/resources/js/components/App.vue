@@ -1,5 +1,12 @@
 <template>
+    <div class="bg-[lightgreen] p-[1rem] rounded-[2rem]">
+        <router-link to="/home" class="m-[2rem] p-[1rem]"> Home </router-link>
+        <router-link to="/tasks" class="m-[2rem] p-[1rem]"> Tasks </router-link>
+    </div>
     <div>
-        <h1>Welcome to Laravel 12 with Vue 3</h1>
+        <router-view></router-view>
     </div>
 </template>
+
+<style scoped>
+</style>

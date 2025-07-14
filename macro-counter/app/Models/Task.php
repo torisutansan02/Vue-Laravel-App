@@ -8,3 +8,5 @@ class Task extends Model
 {
     protected $fillable = ['title', 'protein', 'carbs', 'fat'];
 }
+
+?>

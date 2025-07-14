@@ -1,26 +1,59 @@
 <template>
-  <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Laravel 12 + Vue 3 Tasks</h1>
+  <div class="bg-[lightgray] mt-[2rem] mb-[2rem] pl-[2rem] pr-[2rem] pt-[0.5rem] pb-[0.5rem] rounded-[2rem]">
+    <h1 class="bg-[lightyellow] w-[fit-content] p-[1rem] rounded-[0.5rem]">Laravel 12 + Vue 3 Tasks</h1>
 
-    <form @submit.prevent="addTask" class="space-y-2">
-      <input v-model="form.title" placeholder="Task title" class="border p-1 w-full" />
-      <input v-model.number="form.protein" type="number" placeholder="Protein" class="border p-1 w-full" />
-      <input v-model.number="form.carbs" type="number" placeholder="Carbs" class="border p-1 w-full" />
-      <input v-model.number="form.fat" type="number" placeholder="Fat" class="border p-1 w-full" />
-      <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Add Task</button>
+    <form @submit.prevent="addTask" class="bg-[lightblue] w-[fit-content] p-[1rem] rounded-[0.5rem]">
+      <p>
+        Name
+        <input v-model="form.title" placeholder="Task title" class="p-[0.5rem] mt-[0.5rem]" />
+      </p>
+      <p>
+        Protein Count
+        <input v-model.number="form.protein" type="number" placeholder="Protein" class="p-[0.5rem] mt-[0.5rem]" />
+      </p>
+      <p>
+        Carb Count
+        <input v-model.number="form.carbs" type="number" placeholder="Carbs" class="p-[0.5rem] mt-[0.5rem]" />
+      </p>
+      <p>
+        Fat Count
+        <input v-model.number="form.fat" type="number" placeholder="Fat" class="p-[0.5rem] mt-[0.5rem]" />
+      </p>
+      <button type="submit" class="bg-[lightgreen] text-[black] px-[1rem] py-[1rem] cursor-[pointer]">Add Task</button>
     </form>
 
-    <ul class="mt-6 space-y-2">
-      <li v-for="task in tasks" :key="task.id" class="border p-2">
-        {{ task.title }} - P: {{ task.protein }}, C: {{ task.carbs }}, F: {{ task.fat }}
-        <button @click="deleteTask(task.id)" class="ml-4 text-red-600">Delete</button>
-      </li>
-    </ul>
+    <div v-for="task in calculateMacros" :key="task.id" class="mt-[2rem] mb-[2rem] p-[1rem] bg-[lightblue] w-[fit-content] rounded-[0.5rem]">
+      <table class="w-[25rem]">
+        <thead>
+          <tr class="text-left">
+            <th> Name </th>
+            <th> Protein </th>
+            <th> Carbs </th>
+            <th> Fats </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> {{ task.title }} </td>
+            <td> {{ task.protein }}g </td>
+            <td> {{ task.carbs }}g  </td>
+            <td> {{ task.fat }}g </td>
+          </tr>
+          <tr>
+            <td> Ideal (g): </td>
+            <td> {{ task.macros.protein }}g </td>
+            <td> {{ task.macros.carbs }}g </td>
+            <td> {{ task.macros.fat }}g </td>
+          </tr>
+        </tbody>
+      </table>
+      <button @click="deleteTask(task.id)" class="p-[0.5rem] mt-[0.5rem] bg-[lightcoral] cursor-[pointer]">Delete</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
 const tasks = ref([])
@@ -58,6 +91,24 @@ const deleteTask = async (id) => {
     console.error('Delete failed', err)
   }
 }
+
+const calculateMacros = computed(() => {
+  return tasks.value.map(task => {
+    const total = task.protein + task.carbs + task.fat
+    const proteinCount = total * 0.45
+    const carbsCount = total * 0.35
+    const fatCount = total * 0.20
+
+    return {
+      ...task,
+      macros: {
+        protein: proteinCount.toFixed(1),
+        carbs: carbsCount.toFixed(1),
+        fat: fatCount.toFixed(1)
+      }
+    }
+  })
+})
 
 onMounted(fetchTasks)
 </script>

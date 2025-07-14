@@ -1,5 +1,6 @@
 <template>
     <div>
-        <h2>This is the Home Page</h2>
+        <h2> Home Page </h2>
+        <p> This project is meant to demonstrate my skills in Vue.js </p>
     </div>
 </template>
