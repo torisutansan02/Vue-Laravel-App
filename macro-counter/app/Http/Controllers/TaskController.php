@@ -8,11 +8,13 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
+    // Read all entries
     public function read()
     {
         return Task::all();
     }
 
+    // Read one entry
     public function readOne($id)
     {
         $task = Task::find($id);
@@ -22,6 +24,7 @@ class TaskController extends Controller
         return $task;
     }
 
+    // Create one entry
     public function create(Request $request)
     {
         $validated = $request->validate([
@@ -34,6 +37,7 @@ class TaskController extends Controller
         return Task::create($validated);
     }
 
+    // Update one entry
     public function update(Request $request, $id)
     {
         $task = Task::find($id);
@@ -53,6 +57,7 @@ class TaskController extends Controller
         return $task;
     }
 
+    // Delete one entry
     public function delete($id)
     {
         $task = Task::find($id);
