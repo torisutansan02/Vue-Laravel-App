@@ -8,25 +8,61 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function read()
     {
         return Task::all();
     }
 
-    public function store(Request $request)
+    public function readOne($id)
+    {
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+        return $task;
+    }
+
+    public function create(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string',
-            'protein' => 'required|integer|min:0',
-            'carbs' => 'required|integer|min:0',
-            'fat' => 'required|integer|min:0',
+            'title' => 'required|string|max:10',
+            'protein' => 'required|integer|min:0|max:1000',
+            'carbs' => 'required|integer|min:0|max:1000',
+            'fat' => 'required|integer|min:0|max:1000',
         ]);
 
         return Task::create($validated);
     }
 
-    public function destroy($id)
+    public function update(Request $request, $id)
     {
-        return Task::destroy($id);
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:10',
+            'protein' => 'required|integer|min:0|max:1000',
+            'carbs' => 'required|integer|min:0|max:1000',
+            'fat' => 'required|integer|min:0|max:1000',
+        ]);
+
+        $task->update($validated);
+
+        return $task;
+    }
+
+    public function delete($id)
+    {
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $task->delete();
+        return response()->json(['message' => 'Task deleted']);
     }
 }
+
+?>

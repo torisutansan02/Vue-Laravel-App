@@ -48,6 +48,7 @@
         </tbody>
       </table>
       <button @click="deleteTask(task.id)" class="p-[0.5rem] mt-[0.5rem] bg-[lightcoral] cursor-[pointer]">Delete</button>
+      <button @click="editTask(task)" class="ml-2 p-[0.5rem] bg-[orange] cursor-[pointer]">Edit</button>
     </div>
   </div>
 </template>
@@ -63,6 +64,8 @@ const form = ref({
   carbs: 0,
   fat: 0
 })
+const isEditing = ref(false)
+const editingId = ref(null)
 
 const fetchTasks = async () => {
   try {
@@ -73,13 +76,47 @@ const fetchTasks = async () => {
   }
 }
 
+const getTaskById = async(id) => {
+  try {
+    const res = await axios.get(`/api/tasks/${id}`)
+    console.log('Single task:', res.data)
+    return res.data
+  } catch (err) {
+    console.log('Get single task failed', err)
+  }
+}
+
 const addTask = async () => {
   try {
-    await axios.post('/api/tasks', form.value)
+    if (isEditing.value) {
+      await axios.put(`/api/tasks/${editingId.value}`, form.value)
+    } else {
+      await axios.post('/api/tasks', form.value)
+    }
+
+    form.value = {
+      title: '',
+      protein: 0,
+      carbs: 0,
+      fat: 0
+    }
+    isEditing.value = false
+    editingId.value = null
+
     await fetchTasks()
-    form.value = { title: '', protein: 0, carbs: 0, fat: 0 }
   } catch (err) {
-    console.error('Add failed', err)
+    console.error('Submit failed', err)
+  }
+}
+
+const editTask = (task) => {
+  isEditing.value = true
+  editingId.value = task.id
+  form.value = {
+    title: task.title,
+    protein: task.protein,
+    carbs: task.carbs,
+    fat: task.fat
   }
 }
 
@@ -110,7 +147,9 @@ const calculateMacros = computed(() => {
   })
 })
 
-onMounted(fetchTasks)
+onMounted(() => {
+  fetchTasks()
+})
 </script>
 
 <style scoped>

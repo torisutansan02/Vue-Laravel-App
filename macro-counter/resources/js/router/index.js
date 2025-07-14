@@ -4,7 +4,7 @@ import Home from '../components/Home.vue';
 import Tasks from '../components/Tasks.vue';
 
 const routes = [
-    { path: '/home', component: Home },
+    { path: '/', component: Home },
     { path: '/tasks', component: Tasks}
 ];
 
